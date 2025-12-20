@@ -1,7 +1,6 @@
 type Node<T> = {
     value: T;
     prev?: Node<T>;
-    next?: Node<T>;
 };
 
 export default class Stack<T> {
@@ -14,35 +13,21 @@ export default class Stack<T> {
     }
 
     push(item: T): void {
-        const newNode = {
-            value: item,
-        } as Node<T>;
-
-        this.length++;
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-
-        newNode.prev = this.head;
-        this.head.next = newNode;
+        const newNode = { value: item, prev: this.head } as Node<T>;
         this.head = newNode;
-        return;
+        this.length++;
     }
 
     pop(): T | undefined {
-        this.length = Math.max(0, this.length - 1);
-        const oldHead = this.head as Node<T>;
-        if (this.length === 0) {
-            this.head = undefined;
-
-            return oldHead?.value;
+        if (!this.length) {
+            return;
         }
+        this.length--;
+        const head = this.head;
+        this.head = this.head?.prev;
 
-        this.head = oldHead?.prev;
-        return oldHead.value;
+        return head?.value;
     }
-
     peek(): T | undefined {
         return this.head?.value;
     }

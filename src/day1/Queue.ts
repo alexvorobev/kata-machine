@@ -1,46 +1,45 @@
-type QueueNode<T> = {
+type Node<T> = {
     value: T;
-    next?: QueueNode<T>;
-    prev?: QueueNode<T>;
+    next?: Node<T>;
+    prev?: Node<T>;
 };
 
 export default class Queue<T> {
     public length: number;
-    private head?: QueueNode<T>;
-    private tail?: QueueNode<T>;
+    private head?: Node<T>; // pointer to the first element
+    private tail?: Node<T>; // pointer to the last element
 
     constructor() {
-        this.length = 0;
         this.head = this.tail = undefined;
+        this.length = 0;
     }
 
     enqueue(item: T): void {
-        const newNode = {
-            value: item,
-        } as QueueNode<T>;
+        const newNode = { value: item } as Node<T>;
         this.length++;
-
         if (!this.tail) {
             this.tail = this.head = newNode;
+            return;
         }
 
-        this.tail.next = { ...newNode, prev: this.tail };
+        this.tail.next = newNode;
+        this.tail = newNode;
     }
 
     deque(): T | undefined {
         if (!this.head) {
-            return undefined;
+            return;
         }
 
+        this.length--;
         const head = this.head;
         this.head = this.head.next;
-        this.length--;
-
-        head.next = undefined;
 
         if (this.length === 0) {
             this.tail = undefined;
         }
+
+        head.next = undefined; // optional: clean up the reference
 
         return head.value;
     }
